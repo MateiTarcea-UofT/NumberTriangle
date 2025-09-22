@@ -1,5 +1,7 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -90,10 +92,9 @@ public class NumberTriangle {
      */
     public int retrieve(String path) {
         String[] split = path.split("(?!^)");
-        if (split[0].equals("l")) {
-            return retrieve(String.join(",", split));
-        }else if (split[0].equals("r")) {
-            return retrieve(String.join(",", split));
+        String[] rest = Arrays.copyOfRange(split, 1, split.length);
+        if (split[0].equals("l") || split[0].equals("r")) {
+            return retrieve(String.join(",", rest));
         }else{
             return this.getRoot();
         }
@@ -121,6 +122,7 @@ public class NumberTriangle {
         // will need to return the top of the NumberTriangle,
         // so might want a variable for that.
         NumberTriangle top = null;
+        List<String[]> lines = new ArrayList<>();
 
 
         String line = br.readLine();
@@ -131,30 +133,20 @@ public class NumberTriangle {
 
             // TODO process the line
             String[][] lineArray = new String[2][];
-            lineArray[0] = line.split("\\s");
+            lines.add(line.split("\\s"));
 
             //read the next line
 
             line = br.readLine();
-            try {
-                lineArray[1] = line.split("\\s");
-            }catch (Exception e) {
-                return null;
-            }
-            System.out.println(Arrays.toString(lineArray));
-            if(lineArray[0].length == 1) {
-                top = new NumberTriangle(Integer.parseInt(lineArray[0][0]));
-            }
-            else {
-                for (int i = 0; i < lineArray.length; i++) {
-                    top = new NumberTriangle(Integer.parseInt(lineArray[0][i]));
-                    top.setLeft(new NumberTriangle(Integer.parseInt(lineArray[1][i])));
-                    top.setRight(new NumberTriangle(Integer.parseInt(lineArray[1][i + 1])));
-                }
-            }
-
         }
         br.close();
+        for(int i = lines.size()-1; i > 0; i--) {
+            for (int j = lines.get(i).length-1; j > 0; j--) {
+                top = new NumberTriangle(Integer.parseInt(lines.get(i-1)[j -1]));
+                top.setLeft(new NumberTriangle(Integer.parseInt(lines.get(i)[j-1])));
+                top.setRight(new NumberTriangle(Integer.parseInt(lines.get(i)[j])));
+            }
+        }
         return top;
     }
 
@@ -165,7 +157,7 @@ public class NumberTriangle {
         // [not for credit]
         // you can implement NumberTriangle's maxPathSum method if you want to try to solve
         // Problem 18 from project Euler [not for credit]
-//        mt.maxSumPath();
+        mt.maxSumPath();
         System.out.println(mt);
     }
 }
