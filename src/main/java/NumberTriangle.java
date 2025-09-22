@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -109,12 +110,12 @@ public class NumberTriangle {
         InputStream inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
-
         // TODO define any variables that you want to use to store things
 
         // will need to return the top of the NumberTriangle,
         // so might want a variable for that.
         NumberTriangle top = null;
+
 
         String line = br.readLine();
         while (line != null) {
@@ -123,9 +124,29 @@ public class NumberTriangle {
             System.out.println(line);
 
             // TODO process the line
+            String[][] lineArray = new String[2][];
+            lineArray[0] = line.split("\\s");
 
             //read the next line
+
             line = br.readLine();
+            try {
+                lineArray[1] = line.split("\\s");
+            }catch (Exception e) {
+                return null;
+            }
+            System.out.println(Arrays.toString(lineArray));
+            if(lineArray[0].length == 1) {
+                top = new NumberTriangle(Integer.parseInt(lineArray[0][0]));
+            }
+            else {
+                for (int i = 0; i < lineArray.length; i++) {
+                    top = new NumberTriangle(Integer.parseInt(lineArray[0][i]));
+                    top.setLeft(new NumberTriangle(Integer.parseInt(lineArray[1][i])));
+                    top.setRight(new NumberTriangle(Integer.parseInt(lineArray[1][i + 1])));
+                }
+            }
+
         }
         br.close();
         return top;
@@ -138,7 +159,7 @@ public class NumberTriangle {
         // [not for credit]
         // you can implement NumberTriangle's maxPathSum method if you want to try to solve
         // Problem 18 from project Euler [not for credit]
-        mt.maxSumPath();
-        System.out.println(mt.getRoot());
+//        mt.maxSumPath();
+        System.out.println(mt);
     }
 }
