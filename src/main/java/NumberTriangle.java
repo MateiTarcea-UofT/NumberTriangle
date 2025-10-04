@@ -1,7 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -91,12 +89,17 @@ public class NumberTriangle {
      *
      */
     public int retrieve(String path) {
-        if (path.charAt(0) == 'l') {
-            return this.left.retrieve(path.substring(1));
-        } else if (path.charAt(0) == 'r') {
-            return this.right.retrieve(path.substring(1));
-        } else{
-            return this.getRoot();
+        if (path.isEmpty()) {
+            return this.root;
+        } else {
+            String substring = path.substring(1);
+            if (path.charAt(0) == 'l') {
+                return this.left.retrieve(substring);
+            } else if (path.charAt(0) == 'r') {
+                return this.right.retrieve(substring);
+            } else {
+                return this.root;
+            }
         }
     }
 
@@ -121,31 +124,32 @@ public class NumberTriangle {
 
         // will need to return the top of the NumberTriangle,
         // so might want a variable for that.
-        NumberTriangle top = null;
-        List<String[]> lines = new ArrayList<>();
+        ArrayList<NumberTriangle> currentRoots = new ArrayList<>();
+
 
 
         String line = br.readLine();
+        NumberTriangle top = new NumberTriangle(Integer.parseInt(line));
+        currentRoots.add(top);
+        line = br.readLine();
         while (line != null) {
 
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
-
             // TODO process the line
-            String[][] lineArray = new String[2][];
-            lines.add(line.split("\\s"));
+            String[] splitLine = line.split(" ");
+            ArrayList<NumberTriangle> lineNumberTriangles = new ArrayList<>();
+
+            for(int i = 0; i < splitLine.length; i++){
+                lineNumberTriangles.add(new NumberTriangle(Integer.parseInt(splitLine[i])));
+            }
+
+            for(int i = 0; i < currentRoots.size(); i++){
+                currentRoots.get(i).setLeft(lineNumberTriangles.get(i));
+                currentRoots.get(i).setRight(lineNumberTriangles.get(i + 1));
+            }
 
             //read the next line
-
+            currentRoots = lineNumberTriangles;
             line = br.readLine();
-        }
-        br.close();
-        for(int i = lines.size()-1; i > 0; i--) {
-            for (int j = lines.get(i).length-1; j > 0; j--) {
-                top = new NumberTriangle(Integer.parseInt(lines.get(i-1)[j -1]));
-                top.setLeft(new NumberTriangle(Integer.parseInt(lines.get(i)[j-1])));
-                top.setRight(new NumberTriangle(Integer.parseInt(lines.get(i)[j])));
-            }
         }
         return top;
     }
